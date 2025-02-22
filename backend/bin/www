@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+require('dotenv').config();
+const app = require('../app');
+const connectDB = require('../config/db');
+
+// Lấy PORT từ môi trường
+const PORT = normalizePort(process.env.PORT || '5000');
+app.set('port', PORT);
+
+// Kết nối DB và chạy server
+connectDB().then(() => {
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+  });
+
+  server.on('error', onError);
+  server.on('listening', onListening);
+});
+
+// Chuẩn hóa cổng
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
+  return false;
+}
+
+// Xử lý lỗi
+function onError(error) {
+  if (error.syscall !== 'listen') throw error;
+  const bind = typeof PORT === 'string' ? `Pipe ${PORT}` : `Port ${PORT}`;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(`${bind} requires elevated privileges`);
+      process.exit(1);
+    case 'EADDRINUSE':
+      console.error(`${bind} is already in use`);
+      process.exit(1);
+    default:
+      throw error;
+  }
+}
+
+// Khi server lắng nghe thành công
+function onListening() {
+  console.log(`✅ Listening on port ${PORT}`);
+}
