@@ -14,8 +14,8 @@ const userControllers = {
   
   login : async (req, res) => {
     try {
-      const { token, user } = await userService.login(req.body.email, req.body.password);
-      res.status(200).json({ token, user });
+      const { token, user,refreshToken } = await userService.login(req.body.email, req.body.password);
+      res.status(200).json({ token, user,refreshToken });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
